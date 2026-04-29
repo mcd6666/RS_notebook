@@ -24,7 +24,9 @@ https://github.com/mcd6666/Notebook.git
 ```powershell
 git init
 git branch -M main
-git remote add origin https://github.com/mcd6666/Notebook.git
+#git remote add origin https://github.com/mcd6666/Notebook.git
+git remote set-url origin git@github.com:mcd6666/RS_notebook.git
+
 ```
 
 后来发现远端仓库已经有一个 `README.md` 初始提交，所以先拉取并合并远端内容：

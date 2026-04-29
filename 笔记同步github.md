@@ -24,9 +24,7 @@ https://github.com/mcd6666/Notebook.git
 ```powershell
 git init
 git branch -M main
-#git remote add origin https://github.com/mcd6666/Notebook.git
-git remote set-url origin git@github.com:mcd6666/RS_notebook.git
-
+git remote add origin https://github.com/mcd6666/Notebook.git
 ```
 
 后来发现远端仓库已经有一个 `README.md` 初始提交，所以先拉取并合并远端内容：
@@ -333,7 +331,281 @@ Obsidian 默认格式是：
 
 ---
 
-## 十、当前结果
+## 十、创建新的笔记文件夹并同步到另一个仓库
+
+如果要把另一个文件夹单独同步到另一个 GitHub 仓库，例如：
+
+```text
+F:\日常随记
+```
+
+它应该作为一个独立 Git 仓库来管理，不要和 `F:\黑曜石仓库` 混在一起。
+
+进入新文件夹：
+
+```powershell
+cd F:\日常随记
+```
+
+如果还不是 Git 仓库，先初始化：
+
+```powershell
+git init
+git branch -M main
+```
+
+添加 `.gitignore`：
+
+```powershell
+notepad .gitignore
+```
+
+内容仍然可以使用：
+
+```gitignore
+**/.obsidian/workspace.json
+**/.obsidian/workspace-mobile.json
+**/.obsidian/cache/
+**/.trash/
+.DS_Store
+Thumbs.db
+```
+
+然后绑定新的 GitHub 仓库。比如新仓库叫 `RS_notebook`：
+
+```powershell
+git remote add origin git@github.com:mcd6666/RS_notebook.git
+```
+
+如果之前不小心绑定成 HTTPS，例如：
+
+```text
+https://github.com/mcd6666/RS_notebook.git
+```
+
+可以改成 SSH：
+
+```powershell
+git remote set-url origin git@github.com:mcd6666/RS_notebook.git
+```
+
+检查当前仓库绑定到了哪里：
+
+```powershell
+git remote -v
+```
+
+如果显示：
+
+```text
+origin  git@github.com:mcd6666/RS_notebook.git (fetch)
+origin  git@github.com:mcd6666/RS_notebook.git (push)
+```
+
+说明这个文件夹会同步到 `RS_notebook` 仓库。
+
+---
+
+## 十一、新仓库第一次提交和推送
+
+新仓库第一次同步一般执行：
+
+```powershell
+git add .
+git commit -m "Initial sync"
+git push -u origin main
+```
+
+第一次推送要加：
+
+```powershell
+-u origin main
+```
+
+这样 Git 会把本地 `main` 分支和远程 `origin/main` 分支绑定起来。以后就可以直接：
+
+```powershell
+git push
+```
+
+如果忘了加 `-u`，可能会看到：
+
+```text
+fatal: The current branch main has no upstream branch.
+```
+
+解决办法：
+
+```powershell
+git push -u origin main
+```
+
+或者：
+
+```powershell
+git push --set-upstream origin main
+```
+
+---
+
+## 十二、SSH key 是否需要重新生成
+
+不需要每个仓库都生成一个新的 SSH key。
+
+之前已经生成过这个 GitHub 专用 SSH key：
+
+```text
+C:\Users\DELL\.ssh\id_ed25519_github
+```
+
+只要是同一台电脑、同一个 GitHub 账号 `mcd6666`，多个仓库都可以共用这个 SSH key。
+
+也就是说，这些仓库都可以使用同一个 key：
+
+```text
+F:\黑曜石仓库
+F:\日常随记
+E:\tide_model
+```
+
+前提是 remote 使用 SSH 格式：
+
+```text
+git@github.com:mcd6666/仓库名.git
+```
+
+不要重复运行：
+
+```powershell
+ssh-keygen -t ed25519 -C "63773366+mcd6666@users.noreply.github.com" -f C:\Users\DELL\.ssh\id_ed25519_github
+```
+
+除非原来的 key 丢失了，或者想专门换一个新 key。
+
+---
+
+## 十三、HTTPS 连接失败时怎么办
+
+如果看到：
+
+```text
+fatal: unable to access 'https://github.com/mcd6666/RS_notebook.git/':
+Recv failure: Connection was reset
+```
+
+或者：
+
+```text
+Failed to connect to github.com port 443
+```
+
+说明当前仓库使用 HTTPS remote，而这台电脑的命令行访问 GitHub HTTPS 不稳定。
+
+检查 remote：
+
+```powershell
+git remote -v
+```
+
+如果看到：
+
+```text
+origin  https://github.com/mcd6666/RS_notebook.git (fetch)
+origin  https://github.com/mcd6666/RS_notebook.git (push)
+```
+
+改成 SSH：
+
+```powershell
+git remote set-url origin git@github.com:mcd6666/RS_notebook.git
+```
+
+然后再推送：
+
+```powershell
+git push
+```
+
+如果是第一次推送：
+
+```powershell
+git push -u origin main
+```
+
+---
+
+## 十四、空文件夹为什么没有上传
+
+Git 可以跟踪空文件，但不会跟踪空文件夹。
+
+如果一个文件夹是空的，GitHub 上不会显示它。这是 Git 的正常机制。
+
+解决办法是在空文件夹里放一个占位文件，常用名字是：
+
+```text
+.gitkeep
+```
+
+例如要保留这个空文件夹：
+
+```text
+F:\日常随记\图片
+```
+
+可以执行：
+
+```powershell
+New-Item -ItemType File -Path "F:\日常随记\图片\.gitkeep"
+```
+
+然后提交：
+
+```powershell
+cd F:\日常随记
+git add .
+git commit -m "Add empty folders"
+git push
+```
+
+如果是空的 `.md` 文件，Git 是可以上传的。只要执行：
+
+```powershell
+git add .
+git commit -m "Add empty note"
+git push
+```
+
+---
+
+## 十五、如何查看 SSH 公钥
+
+如果 GitHub 要添加 SSH key，可以查看公钥文件：
+
+```powershell
+type C:\Users\DELL\.ssh\id_ed25519_github.pub
+```
+
+输出会是一整行，类似：
+
+```text
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... 63773366+mcd6666@users.noreply.github.com
+```
+
+把整行复制到 GitHub：
+
+```text
+GitHub -> Settings -> SSH and GPG keys -> New SSH key
+```
+
+也可以直接复制到剪贴板：
+
+```powershell
+type C:\Users\DELL\.ssh\id_ed25519_github.pub | clip
+```
+
+---
+
+## 十六、当前结果
 
 - 本地 Obsidian 笔记库已经变成 Git 仓库
 - 已连接 GitHub 仓库 `mcd6666/Notebook`

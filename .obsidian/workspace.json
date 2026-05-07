@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "53c51389a52b3ded",
+        "id": "9ba94fb04165207a",
         "type": "tabs",
         "children": [
           {
-            "id": "872dd329de16ff48",
+            "id": "486d08f34d904f0c",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "遥感影像token计算指南.md",
+                "file": "笔记md格式/海湾生境遥感影像样本标注指南.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "遥感影像token计算指南"
+              "title": "海湾生境遥感影像样本标注指南"
             }
           }
         ]
@@ -183,8 +183,18 @@
       "bases:新建数据库": false
     }
   },
-  "active": "407c07b26fd90b90",
+  "active": "486d08f34d904f0c",
   "lastOpenFiles": [
+    "图片/20260507192055.png",
+    "笔记md格式/海湾生境遥感影像样本标注指南.md",
+    "图片/Pasted.md",
+    "笔记md格式/遥感影像token计算指南.md",
+    "图片/6a70550607f85a08d4f3fa9ce875f72c.png",
+    "图片/20260507191539.png",
+    "笔记md格式/GPU管理和搭建.md",
+    "笔记md格式/Obsidian笔记同步github.md",
+    "README.md",
+    "笔记md格式",
     "遥感python常用脚本/GF_reg_rename_batch.py",
     "遥感python常用脚本/rename_GF02.py",
     "遥感python常用脚本/重命名（标签数据）.py",
@@ -194,13 +204,8 @@
     "遥感python常用脚本/裁剪划分数据.py",
     "遥感python常用脚本/裁剪不切片.py",
     "遥感python常用脚本/数据增强.py",
-    "遥感python常用脚本/示意图.py",
-    "遥感python常用脚本/readme_code.txt",
     "().md",
-    "遥感影像token计算指南.md",
-    "README.md",
     "笔记同步github.md",
-    "图片/6a70550607f85a08d4f3fa9ce875f72c.png",
     "图片/0f9d109a69a1a5f3362cc496a4ab3776.png",
     "Remote_Sensing_Token_Guide.md",
     "欢迎.md"

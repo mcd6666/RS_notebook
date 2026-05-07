@@ -2,7 +2,7 @@
 
 在遥感深度学习中，Token 是 Transformer 模型（如 ViT, DINOv3）处理信息的最小单元。准确计算 Token 数量对于预估显存占用和 API 成本至关重要。
 
-![image](图片/6a70550607f85a08d4f3fa9ce875f72c.png)
+![image](../图片/6a70550607f85a08d4f3fa9ce875f72c.png)
 
 ---
 

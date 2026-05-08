@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "笔记md格式/海湾生境遥感影像样本标注指南.md",
+                "file": "笔记md格式/Slurm共享 GPU 使用与搭建指南.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "海湾生境遥感影像样本标注指南"
+              "title": "Slurm共享 GPU 使用与搭建指南"
             }
           }
         ]
@@ -186,9 +186,10 @@
   "active": "486d08f34d904f0c",
   "lastOpenFiles": [
     "笔记md格式/Obsidian笔记同步github.md",
+    "笔记md格式/Slurm共享 GPU 使用与搭建指南.md",
+    "笔记md格式/海湾生境遥感影像样本标注指南.md",
     "笔记md格式/GPU管理和搭建.md",
     "笔记md格式/遥感影像token计算指南.md",
-    "笔记md格式/海湾生境遥感影像样本标注指南.md",
     "图片/20260507192055.png",
     "图片/Pasted.md",
     "图片/6a70550607f85a08d4f3fa9ce875f72c.png",

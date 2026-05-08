@@ -40,6 +40,20 @@ git merge origin/main --allow-unrelated-histories --no-edit
 
 为了避免同步 Obsidian 的临时工作区状态和缓存，添加了 `.gitignore`：
 
+先进入仓库根目录：
+
+```powershell
+cd F:\黑曜石仓库
+```
+
+然后新建并打开 `.gitignore` 文件：
+
+```powershell
+notepad .gitignore
+```
+
+在打开的记事本里写入：
+
 ```gitignore
 **/.obsidian/workspace.json
 **/.obsidian/workspace-mobile.json
@@ -50,6 +64,16 @@ Thumbs.db
 ```
 
 这样会同步笔记、图片和必要配置，但不会同步临时界面状态。
+
+保存后提交 `.gitignore`：
+
+```powershell
+git add .gitignore
+git commit -m "Add gitignore"
+git push
+```
+
+注意：`.gitignore` 只能忽略还没有被 Git 跟踪的文件。如果某个文件之前已经提交过，即使后来写进 `.gitignore`，Git 还是会继续跟踪它。
 
 ---
 
@@ -605,7 +629,306 @@ type C:\Users\DELL\.ssh\id_ed25519_github.pub | clip
 
 ---
 
-## 十六、当前结果
+## 十六、分支是什么，什么时候需要用分支
+
+Git 分支可以理解为一条单独的修改线。
+
+主分支一般叫 `main`，用来放稳定内容。多人一起维护时，不建议大家都直接改 `main`，更推荐每个人先在自己的分支上改。
+
+如果只是自己一个人维护笔记，可以直接在 `main` 上提交：
+
+```powershell
+git add .
+git commit -m "Update notes"
+git push
+```
+
+如果是多人维护，或者一次修改比较多，建议新建分支：
+
+```powershell
+git checkout -b update-deep-learning-notes
+```
+
+意思是：从当前版本新建一个分支，并切换过去。
+
+在分支上修改、提交：
+
+```powershell
+git add .
+git commit -m "Update deep learning notes"
+git push -u origin update-deep-learning-notes
+```
+
+常用分支命令：
+
+```powershell
+git branch
+git checkout main
+git checkout -b 分支名
+git push -u origin 分支名
+```
+
+其中：
+
+- `git branch`：查看本地有哪些分支
+- `git checkout main`：切回主分支
+- `git checkout -b 分支名`：创建并切换到新分支
+- `git push -u origin 分支名`：第一次把新分支推送到 GitHub
+
+分支名建议写清楚用途，比如：
+
+```text
+add-python-notes
+fix-image-links
+update-reading-notes
+```
+
+---
+
+## 十七、Pull Request 是什么
+
+Pull Request 简称 PR，可以理解为：
+
+```text
+我在自己的分支上改好了，请求把这些修改合并到 main。
+```
+
+它不是一个新的文件，也不是一个命令，而是 GitHub 网页上的一个“合并申请”。
+
+PR 里可以看到：
+
+- 改了哪些文件
+- 每个文件具体改了哪些行
+- 其他人是否同意
+- 有没有冲突
+- 最后是否合并到 `main`
+
+简单理解：
+
+```text
+分支 = 自己先单独改
+Pull Request = 把自己的修改拿出来给大家检查
+Merge = 检查后正式合并进 main
+```
+
+创建 PR 的常见流程：
+
+```powershell
+git checkout main
+git pull
+git checkout -b add-my-notes
+```
+
+修改笔记后：
+
+```powershell
+git status
+git add .
+git commit -m "Add my notes"
+git push -u origin add-my-notes
+```
+
+然后打开 GitHub 仓库页面，通常会看到：
+
+```text
+Compare & pull request
+```
+
+点击它，就可以创建 Pull Request。
+
+---
+
+## 十八、多人共同维护仓库时怎么做
+
+推荐流程：
+
+```text
+先拉取最新 main -> 新建自己的分支 -> 修改笔记 -> 推送分支 -> 创建 Pull Request -> 检查后合并到 main
+```
+
+多人协作时，最好约定：
+
+- `main` 分支只放确认过的内容
+- 每个人在自己的分支上修改
+- 不要随便删除别人写的文件
+- 修改同一个文件前，先 `git pull` 拉取最新内容
+- 合并前看一下 GitHub 的 Files changed，确认改动符合预期
+
+如果两个人同时修改同一个文件的同一段内容，合并时可能出现冲突。Git 会要求人工选择保留哪一部分内容。
+
+冲突文件里可能会出现：
+
+```text
+<<<<<<< HEAD
+本地内容
+=======
+别人提交的内容
+>>>>>>> 分支名
+```
+
+处理办法是手动编辑文件，把最终要保留的内容留下，并删除这些冲突标记。然后：
+
+```powershell
+git add .
+git commit -m "Resolve merge conflict"
+git push
+```
+
+---
+
+## 十九、分支合并到 main 是大家都可以吗
+
+不一定，取决于 GitHub 仓库权限和分支保护规则。
+
+如果仓库没有设置保护规则，并且某个人对仓库有 Write 或更高权限，那么他通常可以：
+
+```text
+直接 push 到 main
+创建分支
+创建 Pull Request
+合并 Pull Request
+```
+
+如果想避免误操作，建议在 GitHub 上保护 `main` 分支：
+
+```text
+GitHub 仓库 -> Settings -> Branches -> Branch protection rules -> Add rule
+```
+
+常见设置：
+
+```text
+Branch name pattern: main
+Require a pull request before merging
+Require approvals
+Do not allow bypassing the above settings
+```
+
+这样做之后，大家不能随便直接把内容推到 `main`，需要通过 Pull Request，并且可以要求至少一个人审核后才能合并。
+
+如果只是个人笔记仓库，可以不设置这么严格；如果是多人共同维护，建议至少开启：
+
+```text
+Require a pull request before merging
+```
+
+---
+
+## 二十、误操作了会怎么样，怎么补救
+
+先看误操作发生在哪一步，再决定怎么处理。
+
+### 情况 1：改错了文件，但还没有提交
+
+先查看改了哪些文件：
+
+```powershell
+git status
+```
+
+放弃某个文件的修改：
+
+```powershell
+git restore 文件路径
+```
+
+例如：
+
+```powershell
+git restore "论文/笔记同步github.md"
+```
+
+放弃所有未提交修改：
+
+```powershell
+git restore .
+```
+
+注意：`git restore .` 会丢掉当前目录下所有还没提交的修改。
+
+### 情况 2：已经提交了，但还没有 push
+
+修改最近一次提交说明：
+
+```powershell
+git commit --amend -m "新的提交说明"
+```
+
+撤销最近一次提交，但保留文件修改：
+
+```powershell
+git reset --soft HEAD~1
+```
+
+如果连文件修改也不想保留，不要随便执行强制命令，先确认会丢掉哪些内容。
+
+### 情况 3：已经 push 到自己的分支
+
+继续提交一个修复即可：
+
+```powershell
+git add .
+git commit -m "Fix previous changes"
+git push
+```
+
+如果这个分支已经创建了 Pull Request，新的修复提交会自动出现在同一个 PR 里。
+
+### 情况 4：已经合并到 main
+
+推荐新建一个修复提交，把错误内容改回来：
+
+```powershell
+git checkout main
+git pull
+```
+
+然后手动修改文件，改回正确内容，再提交：
+
+```powershell
+git add .
+git commit -m "Fix mistaken merge"
+git push
+```
+
+如果整个 Pull Request 都合并错了，也可以在 GitHub 上打开那个 PR，点击：
+
+```text
+Revert
+```
+
+GitHub 会创建一个反向修改的 Pull Request，用来撤销那次合并。
+
+### 情况 5：不小心删除了别人文件
+
+如果还没提交：
+
+```powershell
+git restore 被删除的文件路径
+```
+
+如果已经提交并 push，尽快再提交一次，把文件恢复回来。可以从 GitHub 历史版本里找，也可以用：
+
+```powershell
+git log -- 被删除的文件路径
+```
+
+查看这个文件的历史提交。
+
+### 最重要的原则
+
+多人协作时，尽量不要使用不理解的强制命令，例如：
+
+```powershell
+git push --force
+git reset --hard
+```
+
+这些命令可能覆盖远端历史或丢掉本地修改。多人仓库里不要随便使用。
+
+---
+
+## 二十一、当前结果
 
 - 本地 Obsidian 笔记库已经变成 Git 仓库
 - 已连接 GitHub 仓库 `mcd6666/Notebook`

@@ -79,7 +79,10 @@ set "SATELLITE_GEOM=C:\satgeom\v0.1\satellite-geom.exe"
 set "BA=C:\satgeom\v0.1\ba.exe"
 set "SAMPLE_STEP=8"
 set "PIF_METHOD=imad"
-set "IMAD_ITER=20"
+set "IMAD_ITER=100"
+set "IMAD_DELTA=0.001"
+set "PIF_NCP_THRESH=0.95"
+set "REGRESSION_METHOD=orthogonal"
 set "ROI_TILE_SIZE=256"
 set "ROI_TOP_PERCENT=20"
 set "ROI_MAX_TILES=20"
@@ -190,7 +193,10 @@ set "SCALE=1"
 --pif-percentile  保留 iMAD/差异分数最低的百分比，默认 5
 --min-pixels      每个波段至少需要的 PIF 像元数，默认 100
 --pif-method      PIF 筛选方法，imad 更稳，score 更快
---imad-iter       iMAD 迭代次数，默认 20
+--imad-iter       iMAD 最大迭代次数，默认 100
+--imad-delta      iMAD 收敛阈值，默认 0.001
+--pif-ncp-thresh  iMAD no-change probability 阈值，默认 0.95
+--regression-method 回归方法，orthogonal 对齐原 radcal，robust 为鲁棒备选
 ```
 
 `.bat` 中常用的自动 ROI 与采样参数：
@@ -198,7 +204,10 @@ set "SCALE=1"
 ```bat
 set "SAMPLE_STEP=8"
 set "PIF_METHOD=imad"
-set "IMAD_ITER=20"
+set "IMAD_ITER=100"
+set "IMAD_DELTA=0.001"
+set "PIF_NCP_THRESH=0.95"
+set "REGRESSION_METHOD=orthogonal"
 set "ROI_TILE_SIZE=256"
 set "ROI_TOP_PERCENT=20"
 set "ROI_MAX_TILES=20"
@@ -209,7 +218,10 @@ set "ROI_MAX_TILES=20"
 ```text
 SAMPLE_STEP      拟合阶段的采样间隔，越小越精细，越大越快
 PIF_METHOD       PIF 筛选方法，正式建议 imad，快速测试可用 score
-IMAD_ITER        iMAD 迭代次数
+IMAD_ITER        iMAD 最大迭代次数，默认 100
+IMAD_DELTA       iMAD 收敛阈值，默认 0.001
+PIF_NCP_THRESH   no-change probability 阈值，默认 0.95
+REGRESSION_METHOD 回归方法，正式建议 orthogonal
 ROI_TILE_SIZE    自动 ROI 网格块大小
 ROI_TOP_PERCENT  保留稳定性排名靠前的 ROI 比例
 ROI_MAX_TILES    最多使用多少个稳定 ROI 网格块

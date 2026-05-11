@@ -36,7 +36,12 @@ set "SCALE=10000"
 set "SAMPLE_STEP=4"
 set "PIF_METHOD=imad"
 
-set "IMAD_ITER=20"
+set "IMAD_ITER=100"
+
+set "IMAD_DELTA=0.001"
+set "PIF_NCP_THRESH=0.95"
+
+set "REGRESSION_METHOD=orthogonal"
 set "ROI_TILE_SIZE=512"
 set "ROI_TOP_PERCENT=20"
 
@@ -56,13 +61,13 @@ if not "%PRJ%"=="" set "PRJ_ARGS=-p %PRJ%"
 
 echo Running command:
 
-echo "%PYTHON%" "%~dp0run_gf_preprocess.py" -i "%IN_FOLDER%" -g "%GEOM_FOLDER%" -o "%RRC_FOLDER%" -r "%REFERENCE%" -d "%DEM%" %PRJ_ARGS% --satellite-geom "%SATELLITE_GEOM%" --ba "%BA%" --reference-bands "%REFERENCE_BANDS%" --target-bands "%TARGET_BANDS%" --scale "%SCALE%" --sample-step "%SAMPLE_STEP%" --pif-method "%PIF_METHOD%" --imad-iter "%IMAD_ITER%" --roi-tile-size "%ROI_TILE_SIZE%" --roi-top-percent "%ROI_TOP_PERCENT%" --roi-max-tiles "%ROI_MAX_TILES%" %EXTRA_FLAGS%
+echo "%PYTHON%" "%~dp0run_gf_preprocess.py" -i "%IN_FOLDER%" -g "%GEOM_FOLDER%" -o "%RRC_FOLDER%" -r "%REFERENCE%" -d "%DEM%" %PRJ_ARGS% --satellite-geom "%SATELLITE_GEOM%" --ba "%BA%" --reference-bands "%REFERENCE_BANDS%" --target-bands "%TARGET_BANDS%" --scale "%SCALE%" --sample-step "%SAMPLE_STEP%" --pif-method "%PIF_METHOD%" --imad-iter "%IMAD_ITER%" --imad-delta "%IMAD_DELTA%" --pif-ncp-thresh "%PIF_NCP_THRESH%" --regression-method "%REGRESSION_METHOD%" --roi-tile-size "%ROI_TILE_SIZE%" --roi-top-percent "%ROI_TOP_PERCENT%" --roi-max-tiles "%ROI_MAX_TILES%" %EXTRA_FLAGS%
 
 echo.
 
 
 
-"%PYTHON%" "%~dp0run_gf_preprocess.py" -i "%IN_FOLDER%" -g "%GEOM_FOLDER%" -o "%RRC_FOLDER%" -r "%REFERENCE%" -d "%DEM%" %PRJ_ARGS% --satellite-geom "%SATELLITE_GEOM%" --ba "%BA%" --reference-bands "%REFERENCE_BANDS%" --target-bands "%TARGET_BANDS%" --scale "%SCALE%" --sample-step "%SAMPLE_STEP%"  --pif-method "%PIF_METHOD%" --imad-iter "%IMAD_ITER%" --roi-tile-size "%ROI_TILE_SIZE%" --roi-top-percent "%ROI_TOP_PERCENT%" --roi-max-tiles "%ROI_MAX_TILES%" %EXTRA_FLAGS%
+"%PYTHON%" "%~dp0run_gf_preprocess.py" -i "%IN_FOLDER%" -g "%GEOM_FOLDER%" -o "%RRC_FOLDER%" -r "%REFERENCE%" -d "%DEM%" %PRJ_ARGS% --satellite-geom "%SATELLITE_GEOM%" --ba "%BA%" --reference-bands "%REFERENCE_BANDS%" --target-bands "%TARGET_BANDS%" --scale "%SCALE%" --sample-step "%SAMPLE_STEP%"  --pif-method "%PIF_METHOD%" --imad-iter "%IMAD_ITER%" --imad-delta "%IMAD_DELTA%" --pif-ncp-thresh "%PIF_NCP_THRESH%" --regression-method "%REGRESSION_METHOD%" --roi-tile-size "%ROI_TILE_SIZE%" --roi-top-percent "%ROI_TOP_PERCENT%" --roi-max-tiles "%ROI_MAX_TILES%" %EXTRA_FLAGS%
 
 
 

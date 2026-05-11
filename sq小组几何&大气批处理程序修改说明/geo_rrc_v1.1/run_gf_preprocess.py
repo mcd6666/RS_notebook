@@ -78,7 +78,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--pif-percentile", default="5.0", help="Lowest change-score percentile kept")
     parser.add_argument("--min-pixels", default="100", help="Minimum PIF pixels required")
     parser.add_argument("--pif-method", default="imad", choices=("imad", "score"), help="PIF selection method")
-    parser.add_argument("--imad-iter", default="20", help="Maximum iMAD reweighting iterations")
+    parser.add_argument("--imad-iter", default="100", help="Maximum iMAD reweighting iterations")
+    parser.add_argument("--imad-delta", default="0.001", help="iMAD convergence threshold")
+    parser.add_argument("--pif-ncp-thresh", default="0.95", help="No-change probability threshold")
+    parser.add_argument("--regression-method", default="orthogonal", choices=("orthogonal", "robust"), help="Fit method")
     parser.add_argument("--sample-step", default="4", help="Use every Nth reference-grid pixel for PIF fitting")
     parser.add_argument("--no-auto-roi", action="store_true", help="Disable automatic stable ROI selection")
     parser.add_argument("--roi-tile-size", default="256", help="Automatic ROI tile size on sampled grid")
@@ -160,6 +163,12 @@ def run_rrc(args: argparse.Namespace) -> None:
         args.pif_method,
         "--imad-iter",
         args.imad_iter,
+        "--imad-delta",
+        args.imad_delta,
+        "--pif-ncp-thresh",
+        args.pif_ncp_thresh,
+        "--regression-method",
+        args.regression_method,
         "--sample-step",
         args.sample_step,
         "--roi-tile-size",

@@ -220,7 +220,9 @@ iMAD 的核心思想是把 GF 和 Sentinel-2 的多波段信息作为整体进�
 
 ```text
 PIF_METHOD       PIF 筛选方法，imad 更稳，score 更快
-IMAD_ITER        iMAD 迭代次数
+IMAD_ITER        iMAD 最大迭代次数，默认 100
+IMAD_DELTA       iMAD 收敛阈值，默认 0.001
+PIF_NCP_THRESH   no-change probability 阈值，默认 0.95
 PIF_PERCENTILE   保留 iMAD/差异分数最低的比例
 ```
 
@@ -228,11 +230,13 @@ PIF_PERCENTILE   保留 iMAD/差异分数最低的比例
 
 ```text
 PIF_METHOD=imad
-IMAD_ITER=20
+IMAD_ITER=100
+IMAD_DELTA=0.001
+PIF_NCP_THRESH=0.95
 PIF_PERCENTILE=5
 ```
 
-表示在自动 ROI 候选像元中使用 iMAD 迭代筛选，并选取最终差异分数最低的 5% 作为 PIF。
+表示在自动 ROI 候选像元中使用 iMAD 迭代筛选，最多迭代 100 次；当 canonical correlations 变化量小于 0.001 时提前停止。默认优先选择 no-change probability 大于 0.95 的像元作为 PIF；如果像元数不足，则退回到最终差异分数最低的 5% 作为 PIF。
 
 ## 8. 鲁棒线性回归
 
@@ -242,7 +246,7 @@ PIF_PERCENTILE=5
 Sentinel-2_band = slope * GF_band + intercept
 ```
 
-拟合过程中使用鲁棒迭代方法，自动剔除残差异常的像元，避免少量异常点影响整体校正系数。
+默认拟合方法为正交回归，与原始 `radcalBatch.py` 中的 `orthoregress` 思路一致，即同时考虑 GF 和 Sentinel-2 两侧误差。程序也保留 `robust` 鲁棒回归作为备选方法，可用于异常点较多的场景。
 
 最终每个波段会得到：
 

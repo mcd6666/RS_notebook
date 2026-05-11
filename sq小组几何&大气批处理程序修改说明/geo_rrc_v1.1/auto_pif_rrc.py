@@ -25,6 +25,10 @@ from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
 import numpy as np
+try:
+    from scipy import stats as scipy_stats
+except ImportError:
+    scipy_stats = None
 
 try:
     from osgeo import gdal, osr
@@ -323,7 +327,13 @@ def _weighted_cov(x: np.ndarray, y: np.ndarray, weights: np.ndarray) -> np.ndarr
     return (x * weights[None, :]) @ y.T / total
 
 
-def _imad_score(reference: np.ndarray, target: np.ndarray, candidate_mask: np.ndarray, max_iter: int) -> np.ndarray:
+def _imad_score(
+    reference: np.ndarray,
+    target: np.ndarray,
+    candidate_mask: np.ndarray,
+    max_iter: int,
+    delta_tol: float,
+) -> np.ndarray:
     reference = _normalize_stack_shape(np.asarray(reference), reference.shape[0])
     target = _normalize_stack_shape(np.asarray(target), target.shape[0])
     valid = candidate_mask & np.all(np.isfinite(reference), axis=0) & np.all(np.isfinite(target), axis=0)
@@ -339,8 +349,9 @@ def _imad_score(reference: np.ndarray, target: np.ndarray, candidate_mask: np.nd
     weights = np.ones(n, dtype=np.float64)
     reg = 1e-6
     mad = None
+    old_rho = np.zeros(bands, dtype=np.float64)
 
-    for _ in range(max_iter):
+    for itr in range(max_iter):
         x_mean = _weighted_mean(x_all, weights)
         y_mean = _weighted_mean(y_all, weights)
         x = x_all - x_mean[:, None]
@@ -375,11 +386,16 @@ def _imad_score(reference: np.ndarray, target: np.ndarray, candidate_mask: np.nd
         u = a.T @ x
         v = b.T @ y
         mad = u - v
+        delta = float(np.max(np.abs(rho - old_rho)))
+        old_rho = rho.copy()
         mad_var = np.nanvar(mad, axis=1)
         mad_var = np.where(mad_var > 1e-12, mad_var, 1.0)
         chi2 = np.sum((mad * mad) / mad_var[:, None], axis=0)
 
         new_weights = np.exp(-0.5 * np.clip(chi2, 0, 80))
+        if itr > 0 and delta <= delta_tol:
+            weights = np.maximum(new_weights, 1e-12)
+            break
         if np.allclose(new_weights, weights, rtol=1e-3, atol=1e-4):
             weights = new_weights
             break
@@ -404,10 +420,32 @@ def select_pif_mask(
     min_pixels: int,
     method: str,
     imad_iter: int,
+    imad_delta: float,
+    ncp_thresh: float,
 ) -> np.ndarray:
+    used_ncp = False
     if method == "imad":
         try:
-            score = _imad_score(reference, target, candidate_mask, max_iter=imad_iter)
+            score = _imad_score(
+                reference,
+                target,
+                candidate_mask,
+                max_iter=imad_iter,
+                delta_tol=imad_delta,
+            )
+            if scipy_stats is not None:
+                ncp = scipy_stats.chi2.sf(score, df=reference.shape[0])
+                pif = candidate_mask & np.isfinite(ncp) & (ncp > ncp_thresh)
+                if int(np.count_nonzero(pif)) >= min_pixels:
+                    used_ncp = True
+                    return pif
+                print(
+                    "iMAD ncp>{:.3f} selected only {} pixels; falling back to percentile.".format(
+                        ncp_thresh, int(np.count_nonzero(pif))
+                    )
+                )
+            else:
+                print("SciPy is not available; falling back to percentile PIF selection.")
         except Exception as exc:
             print(f"iMAD PIF selection failed, falling back to score method: {exc}")
             score = _change_score(reference, target)
@@ -511,29 +549,48 @@ def _linear_fit(x: np.ndarray, y: np.ndarray) -> Tuple[float, float]:
     return slope, intercept
 
 
-def _fit_one_band(x: np.ndarray, y: np.ndarray, max_iter: int) -> BandFit:
+def _orthogonal_fit(x: np.ndarray, y: np.ndarray) -> Tuple[float, float]:
+    x_mean = float(np.mean(x))
+    y_mean = float(np.mean(y))
+    xy = np.vstack((x - x_mean, y - y_mean))
+    cov = np.cov(xy)
+    eigvals, eigvecs = np.linalg.eigh(cov)
+    vec = eigvecs[:, int(np.argmax(eigvals))]
+    if abs(vec[0]) <= 1e-12:
+        raise RuntimeError("Degenerate orthogonal regression fit")
+    slope = float(vec[1] / vec[0])
+    intercept = y_mean - slope * x_mean
+    return slope, intercept
+
+
+def _fit_one_band(x: np.ndarray, y: np.ndarray, max_iter: int, regression_method: str) -> BandFit:
     keep = np.isfinite(x) & np.isfinite(y)
     x = x[keep]
     y = y[keep]
     if x.size < 2:
         raise RuntimeError("Not enough pixels to fit band")
 
-    for _ in range(max_iter):
+    if regression_method == "orthogonal":
+        slope, intercept = _orthogonal_fit(x, y)
+    elif regression_method == "robust":
+        for _ in range(max_iter):
+            slope, intercept = _linear_fit(x, y)
+            residual = y - (slope * x + intercept)
+            med = float(np.median(residual))
+            mad = float(np.median(np.abs(residual - med)))
+            if mad <= 1e-12:
+                break
+            new_keep = np.abs(residual - med) <= 3.5 * 1.4826 * mad
+            if int(np.count_nonzero(new_keep)) == x.size:
+                break
+            if int(np.count_nonzero(new_keep)) < max(20, x.size // 10):
+                break
+            x = x[new_keep]
+            y = y[new_keep]
         slope, intercept = _linear_fit(x, y)
-        residual = y - (slope * x + intercept)
-        med = float(np.median(residual))
-        mad = float(np.median(np.abs(residual - med)))
-        if mad <= 1e-12:
-            break
-        new_keep = np.abs(residual - med) <= 3.5 * 1.4826 * mad
-        if int(np.count_nonzero(new_keep)) == x.size:
-            break
-        if int(np.count_nonzero(new_keep)) < max(20, x.size // 10):
-            break
-        x = x[new_keep]
-        y = y[new_keep]
+    else:
+        raise RuntimeError(f"Unsupported regression method: {regression_method}")
 
-    slope, intercept = _linear_fit(x, y)
     pred = slope * x + intercept
     residual = y - pred
     rmse = float(math.sqrt(np.mean(residual * residual)))
@@ -550,6 +607,7 @@ def fit_models(
     output_band_numbers: Sequence[int],
     min_pixels: int,
     max_iter: int,
+    regression_method: str,
 ) -> List[BandFit]:
     models = []
     for idx, band_number in enumerate(output_band_numbers):
@@ -559,7 +617,7 @@ def fit_models(
             raise RuntimeError(
                 f"Band {band_number}: only {x.size} PIF pixels available; need {min_pixels}"
             )
-        fit = _fit_one_band(x, y, max_iter=max_iter)
+        fit = _fit_one_band(x, y, max_iter=max_iter, regression_method=regression_method)
         fit.band = int(band_number)
         models.append(fit)
     return models
@@ -686,6 +744,9 @@ def write_report(
         "roi": roi_stats or {},
         "pif_method": args.pif_method,
         "imad_iter": args.imad_iter,
+        "imad_delta": args.imad_delta,
+        "pif_ncp_thresh": args.pif_ncp_thresh,
+        "regression_method": args.regression_method,
         "pif_pixels": int(pif_count),
         "models": [
             {
@@ -755,8 +816,26 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--imad-iter",
         type=int,
-        default=20,
-        help="Maximum iMAD reweighting iterations; default: 20",
+        default=100,
+        help="Maximum iMAD reweighting iterations; default: 100",
+    )
+    parser.add_argument(
+        "--imad-delta",
+        type=float,
+        default=0.001,
+        help="iMAD canonical-correlation convergence threshold; default: 0.001",
+    )
+    parser.add_argument(
+        "--pif-ncp-thresh",
+        type=float,
+        default=0.95,
+        help="No-change probability threshold for iMAD PIF selection; default: 0.95",
+    )
+    parser.add_argument(
+        "--regression-method",
+        choices=("orthogonal", "robust"),
+        default="orthogonal",
+        help="Radiometric fit method. orthogonal matches original radcal; robust is fallback. Default: orthogonal",
     )
     parser.add_argument(
         "--sample-step",
@@ -829,6 +908,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         parser.error("--sample-step must be >= 1")
     if args.imad_iter < 1:
         parser.error("--imad-iter must be >= 1")
+    if args.imad_delta <= 0:
+        parser.error("--imad-delta must be > 0")
+    if not (0.0 < args.pif_ncp_thresh < 1.0):
+        parser.error("--pif-ncp-thresh must be in (0, 1)")
     if not (0.0 < args.roi_top_percent <= 100.0):
         parser.error("--roi-top-percent must be in (0, 100]")
     if args.roi_max_tiles < 1:
@@ -938,6 +1021,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             min_pixels=args.min_pixels,
             method=args.pif_method,
             imad_iter=args.imad_iter,
+            imad_delta=args.imad_delta,
+            ncp_thresh=args.pif_ncp_thresh,
         )
         if not args.quiet:
             print(f"PIF pixels: {int(np.count_nonzero(pif_mask))}")
@@ -950,6 +1035,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             output_band_numbers=args.target_bands,
             min_pixels=args.min_pixels,
             max_iter=args.max_iter,
+            regression_method=args.regression_method,
         )
         if not args.quiet:
             for model in models:

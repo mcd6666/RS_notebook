@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "笔记md格式/Obsidian笔记同步github.md",
+                "file": "笔记md格式/RTX PRO 6000多卡训练与NVLink分析.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Obsidian笔记同步github"
+              "title": "RTX PRO 6000多卡训练与NVLink分析"
             }
           }
         ]
@@ -185,8 +185,9 @@
   },
   "active": "486d08f34d904f0c",
   "lastOpenFiles": [
-    "笔记md格式/GPU管理和搭建.md",
     "笔记md格式/Obsidian笔记同步github.md",
+    "笔记md格式/RTX PRO 6000多卡训练与NVLink分析.md",
+    "笔记md格式/GPU管理和搭建.md",
     "笔记md格式/Slurm共享 GPU 使用与搭建指南.md",
     "笔记md格式/海湾生境遥感影像样本标注指南.md",
     "笔记md格式/遥感影像token计算指南.md",

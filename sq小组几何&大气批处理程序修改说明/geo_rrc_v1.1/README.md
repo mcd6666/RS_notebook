@@ -17,8 +17,7 @@ C:\satgeom\v0.1\ba.exe
 大气/相对辐射校正不再需要手工选择 ROI，也不再调用 IDL 脚本。
 
 详细处理原理见：
-
-[PROCESS_PRINCIPLE.md](</E:/进行时/空天院/高分预处理/几何大气校正/PROCESS_PRINCIPLE.md>)
+PROCESS_PRINCIPLE.md
 
 ## 文件说明
 
@@ -317,6 +316,52 @@ python run_gf_preprocess.py `
 4. 校正前后典型地物光谱曲线是否合理，例如水体、建筑、植被。
 
 如果几何未对齐，先不要看大气校正结果，应先解决几何问题。
+
+## 批量质量检查
+
+批量处理完成后，可以运行：
+
+```powershell
+.\quality_check_rrc.bat
+```
+
+或直接运行：
+
+```powershell
+python quality_check_rrc.py `
+  -i F:\GF2\xiongan\rrc `
+  -r F:\GF2\xiongan\1\xionganS2C2348.tif `
+  -o F:\GF2\xiongan\rrc\quality_summary.csv
+```
+
+该工具会读取每景的：
+
+```text
+*_RRC.tif
+*_RRC_pif_report.json
+```
+
+并输出：
+
+```text
+quality_summary.csv
+```
+
+汇总内容包括：
+
+```text
+PIF 像元数
+slope / intercept
+R2 / RMSE
+输出影像 min / max / mean / std / 分位数
+0 值比例
+65535 饱和比例
+与 Sentinel-2 重叠区差值 RMSE
+与 Sentinel-2 重叠区相关系数
+PASS / WARN / FAIL 状态
+```
+
+建议只人工复查 `WARN` 和 `FAIL` 的影像。
 
 ## 常见问题
 

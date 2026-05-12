@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "笔记md格式/人工智能与大模型核心概念梳理.md",
+                "file": "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "人工智能与大模型核心概念梳理"
+              "title": "README"
             }
           }
         ]
@@ -185,9 +185,24 @@
   },
   "active": "486d08f34d904f0c",
   "lastOpenFiles": [
+    "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/RRC_METHOD_COMPARISON.md",
+    "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/README.md",
+    "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/quality_check_rrc.py",
+    "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/quality_check_rrc.bat",
+    "tide_model/README.md",
+    "欢迎.md",
+    "sq小组几何&大气批处理程序修改说明/RRC_METHOD_COMPARISON.md",
+    "tide_model/tide_class_consistency_mismatches.csv",
+    "tide_model/gf2_scene_tide.csv",
+    "tide_model/gf2_scene_info.csv",
+    "tide_model/extract_gf2_scene_info.py",
+    "tide_model/batch_gf2_scene_info.py",
+    "tide_model/batch_get_tide.py",
+    "tide_model/analyze_tide_class_consistency.py",
+    "tide_model/tide_class_consistency_report.txt",
+    "笔记md格式/人工智能与大模型核心概念梳理.md",
     "图片/AI模型架构对比_CNN_Transformer_ViT_Mamba_v2.png",
     "图片/互花米草遥感识别系统_大模型_GIS_RAG_Agent.png",
-    "笔记md格式/人工智能与大模型核心概念梳理.md",
     "图片/AI模型架构对比_CNN_Transformer_ViT_Mamba.png",
     "笔记md格式/遥感影像token计算指南.md",
     "笔记md格式/Obsidian笔记同步github.md",
@@ -200,20 +215,9 @@
     "图片/6a70550607f85a08d4f3fa9ce875f72c.png",
     "图片/20260507191539.png",
     "README.md",
-    "笔记md格式",
-    "遥感python常用脚本/GF_reg_rename_batch.py",
-    "遥感python常用脚本/rename_GF02.py",
-    "遥感python常用脚本/重命名（标签数据）.py",
-    "遥感python常用脚本/scan_classes.py",
-    "遥感python常用脚本/样本清洗.py",
-    "遥感python常用脚本/切片.py",
-    "遥感python常用脚本/裁剪划分数据.py",
-    "遥感python常用脚本/裁剪不切片.py",
-    "遥感python常用脚本/数据增强.py",
     "().md",
     "笔记同步github.md",
     "图片/0f9d109a69a1a5f3362cc496a4ab3776.png",
-    "Remote_Sensing_Token_Guide.md",
-    "欢迎.md"
+    "Remote_Sensing_Token_Guide.md"
   ]
 }

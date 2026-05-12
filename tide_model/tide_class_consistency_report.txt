@@ -1,0 +1,24 @@
+rows = 488
+exact_agreement = 393
+exact_agreement_rate = 0.8053
+linear_weighted_kappa = 0.8326
+quadratic_weighted_kappa = 0.9095
+
+confusion_matrix_rows=tide_level_class columns=tide_level_class_threshold
+tide_level_class_threshold  低潮  中低潮  中高潮  高潮
+tide_level_class                            
+低潮                          74   48    0   0
+中低潮                          0  112   10   0
+中高潮                          0    0  122   0
+高潮                           0    0   37  85
+
+absolute_class_difference_counts
+class_difference_abs
+0    393
+1     95
+
+mismatch_pairs
+tide_level_class  tide_level_class_threshold
+低潮                中低潮                           48
+高潮                中高潮                           37
+中低潮               中高潮                           10

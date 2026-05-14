@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/README.md",
+                "file": "笔记md格式/GPU管理和搭建.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "GPU管理和搭建"
             }
           }
         ]
@@ -185,8 +185,16 @@
   },
   "active": "486d08f34d904f0c",
   "lastOpenFiles": [
-    "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/RRC_METHOD_COMPARISON.md",
+    "笔记md格式/星智遥感解译大模型平台视频逐帧分析.md",
+    "图片/星智遥感解译平台视频关键帧总览.jpg",
+    "笔记md格式/遥感影像token计算指南.md",
+    "图片/互花米草遥感识别系统_大模型_GIS_RAG_Agent.png",
+    "笔记md格式/GPU管理和搭建.md",
+    "笔记md格式/Slurm共享 GPU 使用与搭建指南.md",
+    "笔记md格式/RTX PRO 6000多卡训练与NVLink分析.md",
+    "图片/AI模型架构对比_CNN_Transformer_ViT_Mamba_v2.png",
     "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/README.md",
+    "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/RRC_METHOD_COMPARISON.md",
     "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/quality_check_rrc.py",
     "sq小组几何&大气批处理程序修改说明/geo_rrc_v1.1/quality_check_rrc.bat",
     "tide_model/README.md",
@@ -201,15 +209,9 @@
     "tide_model/analyze_tide_class_consistency.py",
     "tide_model/tide_class_consistency_report.txt",
     "笔记md格式/人工智能与大模型核心概念梳理.md",
-    "图片/AI模型架构对比_CNN_Transformer_ViT_Mamba_v2.png",
-    "图片/互花米草遥感识别系统_大模型_GIS_RAG_Agent.png",
     "图片/AI模型架构对比_CNN_Transformer_ViT_Mamba.png",
-    "笔记md格式/遥感影像token计算指南.md",
     "笔记md格式/Obsidian笔记同步github.md",
-    "笔记md格式/GPU管理和搭建.md",
-    "笔记md格式/RTX PRO 6000多卡训练与NVLink分析.md",
     "笔记md格式/海湾生境遥感影像样本标注指南.md",
-    "笔记md格式/Slurm共享 GPU 使用与搭建指南.md",
     "图片/20260507192055.png",
     "图片/Pasted.md",
     "图片/6a70550607f85a08d4f3fa9ce875f72c.png",

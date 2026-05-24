@@ -1,9 +1,9 @@
-# Slurm 多用户新增与 Conda 任务提交模板
+# Slurm 多用户新增与 Conda 任务提交模板（管理人员版）
 
 > 本文档只整理本次对话中已经确定可用的配置与模板，不包含最开始上传文件中的内容。  
 > 当前服务器 Slurm 使用方式：
 >
-> - 小任务 / 调试：`debug_shared` 队列，申请 `mps:25`    （1-99）
+> - 小任务 / 调试：`debug_shared` 队列，申请 `mps:25`    （200份）
 > - 正式单卡训练：`train_exclusive` 队列，申请 `gpu:rtx_pro_6000:1`
 > - 双卡训练：`bigtrain` 队列，申请 `gpu:rtx_pro_6000:2`
 > - 历史任务 / 资源统计：已启用 `sacct / slurmdbd / MariaDB`
@@ -126,7 +126,7 @@ sudo chmod 700 /data/checkpoints/mcd
 这样设置后：
 
 ```text
-mcd 可以读写自己的项目、日志和 checkpoint 目录
+mcd 可以读写自己的项目、日志、checkpoint 和 outputs 目录
 其他普通用户不能进入 mcd 的目录
 root 管理员仍然可以管理
 ```
@@ -473,8 +473,9 @@ TRAIN_SCRIPT="$PROJECT_DIR/train_query_moe_v2_advanced.py"
 mkdir -p "/data/logs/$USER" "/data/checkpoints/$USER"
 
 export CKPT_DIR="/data/checkpoints/$USER/$SLURM_JOB_NAME/$SLURM_JOB_ID"
-export TB_DIR="$CKPT_DIR/tensorboard"
-mkdir -p "$CKPT_DIR" "$TB_DIR"
+export OUTPUT_DIR="$CKPT_DIR/outputs"
+export TB_DIR="$OUTPUT_DIR/tensorboard"
+mkdir -p "$CKPT_DIR" "$OUTPUT_DIR" "$TB_DIR"
 
 activate_env() {
     if [ "$ENV_MODE" = "venv" ]; then
@@ -513,6 +514,7 @@ echo "User: ${USER:-}"
 echo "Node: ${SLURMD_NODENAME:-}"
 echo "CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-}"
 echo "Checkpoint dir: $CKPT_DIR"
+echo "Output dir: $OUTPUT_DIR"
 echo "TensorBoard dir: $TB_DIR"
 echo "================================"
 
@@ -1627,5 +1629,6 @@ python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
     ├── user2
     └── user3
 ```
+
 
 

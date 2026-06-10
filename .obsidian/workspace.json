@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "笔记md格式/Python程序打包为EXE安装包教程.md",
+                "file": "笔记md格式/服务器脚本及文档/Slurm_新增用户_Conda任务模板（管理人员版）.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Python程序打包为EXE安装包教程"
+              "title": "Slurm_新增用户_Conda任务模板（管理人员版）"
             }
           }
         ]
@@ -185,8 +185,8 @@
   },
   "active": "06787e3e34d9ed98",
   "lastOpenFiles": [
-    "笔记md格式/RTX PRO 6000多卡训练与NVLink分析.md",
     "笔记md格式/Python程序打包为EXE安装包教程.md",
+    "笔记md格式/RTX PRO 6000多卡训练与NVLink分析.md",
     "笔记md格式/服务器脚本及文档/Slurm_新增用户_Conda任务模板（管理人员版）.md",
     "笔记md格式/服务器脚本及文档/Slurm_三队列简单训练模板（用户看）.md",
     "笔记md格式/服务器脚本及文档/dino_router.sh",
